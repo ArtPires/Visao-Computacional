@@ -1,19 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload de Imagem</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pitão Editor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5fa;
+      color: #333;
+    }
+
+    header {
+      background-color: white;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo img {
+      height: 28px;
+      vertical-align: middle;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+
+    nav a.active {
+      color: red;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .buttons button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    main {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    main h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    main p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .upload-form {
+      background-color: white;
+      padding: 30px;
+      display: inline-block;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .upload-form label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .upload-form input[type="file"] {
+      margin-bottom: 20px;
+    }
+
+    .upload-form button {
+      background-color: #e62e2e;
+      color: white;
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .mensagem {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      color: #888;
+      font-size: 12px;
+      padding: 20px;
+    }
+  </style>
 </head>
 <body>
-    <h2>Upload de Imagem</h2>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <label for="imagem">Selecione uma imagem:</label>
-        <input type="file" name="imagem" id="imagem" accept="image/*" required>
-        <button type="submit">Enviar</button>
+  <header>
+    <div class="logo">
+
+      <img src="pita.jpg" alt="Pitão Editor">
+    </div>
+  </header>
+
+  <main>
+    <h1>Upload de Imagem</h1>
+    <p>Envie a sua imagem para editá-la:</p>
+
+    <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+      <label for="imagem">Selecione uma imagem:</label>
+      <input type="file" name="imagem" id="imagem" accept="image/*" required>
+      <br>
+      <button type="submit">Enviar</button>
     </form>
+
     {% if mensagem %}
-        <p>{{ mensagem }}</p>
+      <div class="mensagem">{{ mensagem }}</div>
     {% endif %}
+  </main>
+
+  <footer>
+    © timedaCobrinha 2025 ® - Seu Editor de fotos
+  </footer>
 </body>
 </html>
