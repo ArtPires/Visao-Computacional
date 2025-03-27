@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 import cv2
 import os
+import base64
+import numpy as np
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -16,32 +18,33 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'imagem' not in request.files:
-        return "Nenhum arquivo enviado", 400
+        return render_template('index.html', mensagem="Nenhum arquivo enviado")
 
     file = request.files['imagem']
     if file.filename == '':
-        return "Nome de arquivo inválido", 400
+        return render_template('index.html', mensagem="Nome de arquivo inválido")
 
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
 
-    showImage(file_path)
+    processed_img_base64 = process_image(file_path)
 
-    return f"Imagem salva em {file_path}", 200
+    return render_template('index.html', mensagem="Imagem processada!", imagem=processed_img_base64)
 
-def showImage(imagem):
-    img = cv2.imread(imagem)
-    convertImage(img)
-    blur_img = applyBlur(img)
+def process_image(image_path):
+    img = cv2.imread(image_path)
+    img = convert_image(img)
+    img = apply_blur(img)
 
-    cv2.imshow("imagem", blur_img)
-    cv2.waitKey(0)  # aguarda alguma tecla ser pressionada para fechar a imagem
-    cv2.destroyAllWindows()
+    _, buffer = cv2.imencode('.png', img)  # Codifica a imagem em PNG
+    img_base64 = base64.b64encode(buffer).decode('utf-8')  # Converte para string base64
+    return f"data:image/png;base64,{img_base64}"  # Retorna a string para o HTML
 
-def convertImage(image):
+
+def convert_image(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
 
-def applyBlur(image):
+def apply_blur(image):
     return cv2.blur(image[:,:,0],(15,15),0)
 
 if __name__ == '__main__':

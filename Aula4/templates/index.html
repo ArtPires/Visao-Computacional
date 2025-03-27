@@ -139,7 +139,12 @@
     </form>
 
     {% if mensagem %}
-      <div class="mensagem">{{ mensagem }}</div>
+        <p>{{ mensagem }}</p>
+    {% endif %}
+
+    {% if imagem %}
+        <h3>Imagem Processada:</h3>
+        <img src="{{ imagem }}" alt="Imagem processada">
     {% endif %}
   </main>
 
