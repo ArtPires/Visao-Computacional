@@ -30,85 +30,73 @@
     }
 
     .logo img {
-      height: 80px;
+      height: 60px;
       vertical-align: middle;
-
     }
 
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: black;
-      font-weight: bold;
-    }
-
-    nav a.active {
-      color: red;
-    }
-
-    .buttons {
+    .container {
       display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .imagem-preview {
+      width: 300px;
+      height: 300px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
-    .buttons button {
-      background-color: red;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
+    .imagem-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
-    main {
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    main h1 {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    main p {
-      font-size: 18px;
-      margin-bottom: 30px;
-    }
-
-    .upload-form {
+    .form-box {
       background-color: white;
       padding: 30px;
-      display: inline-block;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      min-width: 300px;
     }
 
-    .upload-form label {
-      display: block;
-      margin-bottom: 10px;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
       font-weight: bold;
     }
 
-    .upload-form input[type="file"] {
-      margin-bottom: 20px;
+    input[type="file"],
+    select {
+      padding: 8px;
     }
 
-    .upload-form button {
+    button {
       background-color: #e62e2e;
       color: white;
-      font-size: 16px;
       padding: 10px 20px;
+      font-size: 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-    }
-
-    .mensagem {
-      margin-top: 20px;
-      color: green;
-      font-weight: bold;
     }
 
     footer {
@@ -118,36 +106,70 @@
       font-size: 12px;
       padding: 20px;
     }
+
+    .mensagem {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      color: green;
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="logo">
-
       <img src="{{ url_for('static', filename='img/pita.jpg') }}" alt="Pitão Editor">
     </div>
   </header>
 
-  <main>
-    <h1>Upload de Imagem</h1>
-    <p>Envie a sua imagem para editá-la:</p>
+  {% if mensagem %}
+    <div class="mensagem">{{ mensagem }}</div>
+  {% endif %}
 
-    <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-      <label for="imagem">Selecione uma imagem:</label>
-      <input type="file" name="imagem" id="imagem" accept="image/*" required>
-      <br>
-      <button type="submit">Enviar</button>
-    </form>
+  <div class="container">
+    <div class="imagem-preview">
+      <p><strong>Original</strong></p>
+      {% if imagem_original %}
+        <img src="{{ imagem_original }}" alt="Imagem original">
+      {% else %}
+        <span>Imagem aparecerá aqui</span>
+      {% endif %}
+    </div>
 
-    {% if mensagem %}
-        <p>{{ mensagem }}</p>
-    {% endif %}
+    <div class="imagem-preview">
+      <p><strong>Processada</strong></p>
+      {% if imagem_processada %}
+        <img src="{{ imagem_processada }}" alt="Imagem com efeito">
+      {% else %}
+        <span>Imagem com efeito aparecerá aqui</span>
+      {% endif %}
+    </div>
 
-    {% if imagem %}
-        <h3>Imagem Processada:</h3>
-        <img src="{{ imagem }}" alt="Imagem processada">
-    {% endif %}
-  </main>
+    <div class="form-box">
+      <form action="/" method="post" enctype="multipart/form-data">
+        <label for="imagem">Selecione uma imagem:</label>
+        <input type="file" name="imagem" id="imagem" accept="image/*" required>
+        <button type="submit">Enviar</button>
+      </form>
+
+      {% if imagem_original %}
+        <form action="/efeito" method="post">
+          <label for="efeito">Escolha o efeito:</label>
+          <select name="efeito" id="efeito" required>
+            <option value="original" {% if efeito_selecionado == 'original' %}selected{% endif %}>Original</option>
+            <option value="resize" {% if efeito_selecionado == 'resize' %}selected{% endif %}>Resize</option>
+            <option value="rotacionar" {% if efeito_selecionado == 'rotacionar' %}selected{% endif %}>Rotacionar</option>
+            <option value="blur" {% if efeito_selecionado == 'blur' %}selected{% endif %}>Blur</option>
+            <option value="threshold_bin" {% if efeito_selecionado == 'threshold_bin' %}selected{% endif %}>Threshold Binário</option>
+            <option value="threshold_adapt" {% if efeito_selecionado == 'threshold_adapt' %}selected{% endif %}>Threshold Adaptativo</option>
+            <option value="erosao" {% if efeito_selecionado == 'erosao' %}selected{% endif %}>Erosão</option>
+            <option value="dilatacao" {% if efeito_selecionado == 'dilatacao' %}selected{% endif %}>Dilatação</option>
+          </select>
+          <button type="submit">Aplicar Efeito</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
 
   <footer>
     © timedaCobrinha 2025 ® - Seu Editor de fotos
